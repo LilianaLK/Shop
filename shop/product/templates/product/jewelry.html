@@ -1,0 +1,21 @@
+{% extends 'product/base.html' %}
+{% block content %}
+<ul class ="list-articles">
+{% for j in jewelry %}
+    {% if j.photo %}
+	<p><img class="img-article-left thumb" src="{{j.photo.url}}"></p>
+{% endif %}
+  <li>
+   {% autoescape off %}
+      <h3>{{ j.name |linebreaks}}</h3>
+      <p> Цена: {{ j.cost }}$</p>
+      <p> Артикул: {{ j.articul }}</p>
+      <p> Вес: {{ j.weight }} гр.</p>
+      <p> Материал: {{ j.material }}</p>
+      <p> Описание: {{ j.description }}</p>
+   {% endautoescape %}
+  </li>
+
+  {% endfor %}
+</ul>
+{% endblock %}
