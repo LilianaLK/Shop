@@ -3,8 +3,8 @@ from django.urls import reverse
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=255, verbose_name='Заголовок')
-    slug = models.SlugField(verbose_name='URL', max_length=255, null=True)
+    name = models.CharField(max_length=255, verbose_name='Название')
+    slug = models.SlugField(verbose_name='URL', max_length=255, unique=True, db_index=True)
     cost = models.IntegerField()
     articul = models.IntegerField()
     weight = models.FloatField(default=10, verbose_name='Вес')
@@ -20,7 +20,7 @@ class Product(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('jewelry', kwargs={'jewelry_id': self.pk})
+        return reverse('jewelry', kwargs={'jewelry_slug': self.slug})
     class Meta:
         verbose_name = 'Украшения'
         verbose_name_plural = 'Украшения'
@@ -28,13 +28,13 @@ class Product(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100, db_index= True, verbose_name="Категория")
-    slug = models.SlugField(verbose_name='URL', max_length=255, null=True)
+    slug = models.SlugField(verbose_name='URL', max_length=255, unique=True, db_index=True)
     def __str__(self):
         return self.name
     def get_absolute_url(self):
-        return reverse('category', kwargs={'cat_id': self.pk})
+        return reverse('category', kwargs={'cat_slug': self.slug})
 
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
-        ordering =['name']
+        ordering =['id']

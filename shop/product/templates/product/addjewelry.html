@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить украшение</title>
+    <link rel="shortcut icon" href="{% static 'product/images/logo.ico' %}"
+          type="image/x-icon"/>
+</head>
+<body>
+<p>Добавление украшения форма</p>
+ <form action="{% url 'addjewelry' %}" method="post" enctype="multipart/form-data">
+     {% csrf_token %}
+     {{ form.as_p }}
+ <button type="submit">Добавить</button>
+ </form>
+</body>
+</html>

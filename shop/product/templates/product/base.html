@@ -48,11 +48,11 @@
 		<li><a href="{{ c.get_absolute_url }}">{{c.name}}</a></li>
 	{% endif %}
 {% endfor %}
+		<p><a href="{% url 'addjewelry' %}">Добавить украшение</a></p>
 	</ul>
 </td>
 	<!-- Конец Sidebar'а -->
 <td valign="top" class="content">
-	<!-- Хлебные крошки -->
 	{% block breadcrumbs %}
 	{% endblock %}
 
