@@ -7,6 +7,6 @@ urlpatterns = [
     # path('jewelry/<int:jewelry_id>/', show_jewelry, name='jewelry'),
     path('category/<slug:cat_slug>/', ProductCategory.as_view(), name='category'),
     path('jewelry/<slug:jewelry_slug>/', ShowJewelry.as_view(), name='jewelry'),
-    path('addjewelry/', addjewelry, name='addjewelry')
+    path('addjewelry/', AddJewelry.as_view(), name='addjewelry')
 ]
 
