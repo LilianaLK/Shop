@@ -14,7 +14,7 @@ class Product(models.Model):
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True, verbose_name='Публикация')
-    cat = models.ForeignKey('Category', on_delete=models.PROTECT, null = True)
+    cat = models.ForeignKey('Category', on_delete=models.PROTECT, null = True, related_name='get_jewelries')
 
     def __str__(self):
         return self.name

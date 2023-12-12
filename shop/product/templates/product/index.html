@@ -1,5 +1,13 @@
 {% extends 'product/base.html' %}
 {% block content %}
+
+	<h1>{{ title }}</h1>
+	<form method="get" action="{% url 'home' %}">
+		{{  st_filter.form.as_p }}
+		<button type="submit">Искать</button>
+	</form>
+
+
 <ul class="list-articles">
 	{% for j in jewelries %}
 			<li><div class="article-panel">

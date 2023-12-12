@@ -1,8 +1,11 @@
 from product.models import *
 
-menu = ["LKShop", "Каталог", "Корзина", "Войти"]
+menu = [{'name': "LKShop", 'url_name': 'about'},
+        {'name': "Корзина", 'url_name': 'home'},
+]
 
 class DataMixin:
+    paginate_by=30
     def get_user_context(self, **kwargs):
         context = kwargs
         cats = Category.objects.all()
