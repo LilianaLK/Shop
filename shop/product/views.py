@@ -115,6 +115,7 @@ class ShowJewelry(DataMixin, DetailView):
 
 class ProductCategory(DataMixin, ListView):
     model = Product
+    paginate_by=3
     template_name = 'product/index.html'
     context_object_name = 'jewelries'
     allow_empty = False
