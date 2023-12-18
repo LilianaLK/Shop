@@ -7,7 +7,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from rest_framework import generics
+from rest_framework import generics, viewsets
+from rest_framework.decorators import action
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -184,20 +185,36 @@ def logout_user(request):
     logout(request)
     return redirect('login')
 
-
-class ProductAPIList(generics.ListCreateAPIView):
-    queryset = Product.objects.all()
+class ProductViewSet(viewsets.ModelViewSet):
+    # queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
 
-class ProductAPIUpdate(generics.UpdateAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+        if not pk:
+            return Product.objects.all()[:3]
+        return Product.objects.filter(pk=pk)
 
 
-class ProductAPIDetailView(generics.RetrieveUpdateAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    @action(methods=['get'], detail=True)
+    def category(self, request,pk=None):
+        cats = Category.objects.get(pk=pk)
+
+        return Response({'cats': cats.name})
+
+# class ProductAPIList(generics.ListCreateAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
+#
+#
+# # class ProductAPIUpdate(generics.UpdateAPIView):
+# #     queryset = Product.objects.all()
+# #     serializer_class = ProductSerializer
+#
+# class ProductAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
 
 
 # class ProductAPIView(APIView):

@@ -21,13 +21,19 @@ from django.urls import path
 
 from product.views import *
 from django.urls import path, include
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'product', ProductViewSet, basename='product')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('product.urls')),
-    path('api/v1/productlist/', ProductAPIList.as_view()),
-    path('api/v1/productlist/<int:pk>/', ProductAPIUpdate.as_view()),
-    path('api/v1/productdetail/<int:pk>/', ProductAPIDetailView.as_view()),
+    path('api/v1/', include(router.urls))
+
+    # path('api/v1/productlist/', ProductViewSet.as_view({'get': 'list'})),
+    # path('api/v1/productlist/<int:pk>/', ProductViewSet.as_view({'put': 'update'})),
+    # path('api/v1/productdetail/<int:pk>/', ProductAPIDetailView.as_view()),
 
 
     # path('product/', include('product.urls')),
