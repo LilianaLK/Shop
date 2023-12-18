@@ -25,6 +25,10 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('product.urls')),
+    path('api/v1/productlist/', ProductAPIList.as_view()),
+    path('api/v1/productlist/<int:pk>/', ProductAPIUpdate.as_view()),
+    path('api/v1/productdetail/<int:pk>/', ProductAPIDetailView.as_view()),
+
 
     # path('product/', include('product.urls')),
 

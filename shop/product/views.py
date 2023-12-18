@@ -1,15 +1,21 @@
 from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.forms import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from rest_framework import generics
+from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .filter import ProductFilter
 from .forms import *
 from .models import*
+from .serializers import ProductSerializer
 from .utils import *
 
 class ProductHome(DataMixin, ListView):
@@ -177,4 +183,45 @@ class LoginUser(DataMixin, LoginView):
 def logout_user(request):
     logout(request)
     return redirect('login')
+
+
+class ProductAPIList(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class ProductAPIUpdate(generics.UpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class ProductAPIDetailView(generics.RetrieveUpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+# class ProductAPIView(APIView):
+#     def get(self, request):
+#         p = Product.objects.all()
+#         return Response({'jewelries': ProductSerializer(p, many=True).data})
+#
+#     def post(self, request):
+#         serializer = ProductSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         jewelry_new = Product.objects.create(
+#             name=request.data['name'],
+#             description=request.data['description'],
+#             cat_id=request.data['cat_id'],
+#             cost=request.data['cost'],
+#             articul=request.data['articul'],
+#             material=request.data['material'],
+#             weight=request.data['weight']
+#         )
+#         return Response({'jewelry': ProductSerializer(jewelry_new).data})
+
+
+
+# class ProductAPIView(generics.ListAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
 
