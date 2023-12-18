@@ -1,5 +1,7 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
+
 
 
 class Product(models.Model):
@@ -15,6 +17,7 @@ class Product(models.Model):
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True, verbose_name='Публикация')
     cat = models.ForeignKey('Category', on_delete=models.PROTECT, null = True, related_name='get_jewelries')
+    user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
