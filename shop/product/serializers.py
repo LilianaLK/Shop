@@ -16,6 +16,17 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields=("name","cost","articul","weight","material", "description", "cat", "slug", "time_create", "time_update")
+
+# class ProductDetailSerializer(serializers.ModelSerializer):
+#     pk_name = serializers.SerializerMethodField()
+#     class Meta:
+#         model = Product
+#         fields = '__all__'
+#
+#         def get_pk_name(self, obj):
+#             return f'{obj.pk.name}'
+
+
     # name = serializers.CharField(max_length=255)
     # cost = serializers.IntegerField()
     # articul = serializers.IntegerField()

@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework import generics, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -18,6 +19,10 @@ from .forms import *
 from .models import*
 from .serializers import ProductSerializer
 from .utils import *
+
+
+
+
 
 class ProductHome(DataMixin, ListView):
     paginate_by = 3
@@ -185,17 +190,23 @@ def logout_user(request):
     logout(request)
     return redirect('login')
 
+
 class ProductViewSet(viewsets.ModelViewSet):
     # queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
 
+
     def get_queryset(self):
         pk = self.kwargs.get("pk")
         if not pk:
-            return Product.objects.all()[:3]
+            return Product.objects.all()
         return Product.objects.filter(pk=pk)
 
+    # def get_serializer_class(self):
+    #     if self.action == 'retrieve':
+    #         return ProductDetailSerializer
+    #     return ProductSerializer
 
     @action(methods=['get'], detail=True)
     def category(self, request,pk=None):
@@ -203,9 +214,15 @@ class ProductViewSet(viewsets.ModelViewSet):
 
         return Response({'cats': cats.name})
 
-# class ProductAPIList(generics.ListCreateAPIView):
-#     queryset = Product.objects.all()
-#     serializer_class = ProductSerializer
+class ProductAPIListPagination(PageNumberPagination):
+    page_size = 3
+    page_size_query_param = 'page_size'
+    max_page_size = 10
+
+class ProductAPIList(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    pagination_class = ProductAPIListPagination
 #
 #
 # # class ProductAPIUpdate(generics.UpdateAPIView):
