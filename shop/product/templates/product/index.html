@@ -1,27 +1,22 @@
 {% extends 'product/base.html' %}
 {% block content %}
-
 	<h1>{{ title }}</h1>
 	<form method="get" action="{% url 'home' %}">
 		{{  st_filter.form.as_p }}
 		<button type="submit">Искать</button>
 	</form>
-
-
 <ul class="list-articles">
 	{% for j in jewelries %}
 			<li><div class="article-panel">
 	<p class="first">Категория: {{j.cat}}</p>
 	<p class="last">Дата: {{j.time_update|date:"d-m-Y H:i:s"}}</p>
 </div>
-
 {% if j.photo %}
 	<p><img class="img-article-left thumb" src="{{j.photo.url}}"></p>
 {% endif %}
-
 					<h2>{{j.name}}</h2>
 		{% autoescape on %}
-		<p> Цена: {{j.cost}}$</p>
+		<p> Цена: {{j.formatted_cost}}$</p>
 		{% endautoescape %}
 				<div class="clear"></div>
 				<p class="link-read-post"><a href="{{ j.get_absolute_url }}">Выбрать украшение</a></p>

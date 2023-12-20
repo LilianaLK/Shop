@@ -13,9 +13,11 @@ from .models import Product
 #         self.content = content
 
 class ProductSerializer(serializers.ModelSerializer):
+
+    user= serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Product
-        fields=("name","cost","articul","weight","material", "description", "cat", "slug", "time_create", "time_update")
+        fields=("name","cost","articul","weight","material", "description", "cat", "slug", "time_create", "time_update", 'user')
 
 # class ProductDetailSerializer(serializers.ModelSerializer):
 #     pk_name = serializers.SerializerMethodField()

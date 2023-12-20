@@ -11,16 +11,16 @@ from rest_framework import generics, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .filter import ProductFilter
 from .forms import *
 from .models import*
+from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 from .serializers import ProductSerializer
 from .utils import *
-
-
 
 
 
@@ -35,6 +35,10 @@ class ProductHome(DataMixin, ListView):
         context = super().get_context_data(**kwargs)
         queryset = self.get_queryset()
         st_filter = ProductFilter(self.request.GET, queryset)
+        # добавление других данных
+        jewelries = context.get('object_list', [])
+        for jewelry in jewelries:
+            jewelry.formatted_cost="{:,}".format(jewelry.cost)
         c_def = self.get_user_context(title="Главная страница", st_filter=st_filter)
         auth = self.request.user.is_authenticated
         return dict(list(context.items()) + list(c_def.items()))
@@ -70,7 +74,7 @@ class ProductHome(DataMixin, ListView):
 
 def about(request):
     contact_list = Product.objects.all()
-    paginator = Paginator(contact_list, 4)
+    paginator = Paginator(contact_list, 3)
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -190,50 +194,65 @@ def logout_user(request):
     logout(request)
     return redirect('login')
 
-
-class ProductViewSet(viewsets.ModelViewSet):
-    # queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-
-
-    def get_queryset(self):
-        pk = self.kwargs.get("pk")
-        if not pk:
-            return Product.objects.all()
-        return Product.objects.filter(pk=pk)
-
-    # def get_serializer_class(self):
-    #     if self.action == 'retrieve':
-    #         return ProductDetailSerializer
-    #     return ProductSerializer
-
-    @action(methods=['get'], detail=True)
-    def category(self, request,pk=None):
-        cats = Category.objects.get(pk=pk)
-
-        return Response({'cats': cats.name})
-
-class ProductAPIListPagination(PageNumberPagination):
-    page_size = 3
-    page_size_query_param = 'page_size'
-    max_page_size = 10
-
 class ProductAPIList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    pagination_class = ProductAPIListPagination
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+
+class ProductAPIUpdate(generics.RetrieveUpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = (IsAuthenticated,)
+
+
+class ProductAPIDestroy(generics.RetrieveDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+# class ProductViewSet(viewsets.ModelViewSet):
+#     # queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
 #
 #
-# # class ProductAPIUpdate(generics.UpdateAPIView):
+#
+#     def get_queryset(self):
+#         pk = self.kwargs.get("pk")
+#         if not pk:
+#             return Product.objects.all()
+#         return Product.objects.filter(pk=pk)
+#
+#     # def get_serializer_class(self):
+#     #     if self.action == 'retrieve':
+#     #         return ProductDetailSerializer
+#     #     return ProductSerializer
+#
+#     @action(methods=['get'], detail=True)
+#     def category(self, request,pk=None):
+#         cats = Category.objects.get(pk=pk)
+#
+#         return Response({'cats': cats.name})
+#
+# class ProductAPIListPagination(PageNumberPagination):
+#     page_size = 3
+#     page_size_query_param = 'page_size'
+#     max_page_size = 10
+#
+# class ProductAPIList(generics.ListCreateAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
+#     pagination_class = ProductAPIListPagination
+# #
+# #
+# # # class ProductAPIUpdate(generics.UpdateAPIView):
+# # #     queryset = Product.objects.all()
+# # #     serializer_class = ProductSerializer
+# #
+# # class ProductAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
 # #     queryset = Product.objects.all()
 # #     serializer_class = ProductSerializer
 #
-# class ProductAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Product.objects.all()
-#     serializer_class = ProductSerializer
-
-
+#
 # class ProductAPIView(APIView):
 #     def get(self, request):
 #         p = Product.objects.all()
@@ -252,10 +271,10 @@ class ProductAPIList(generics.ListCreateAPIView):
 #             weight=request.data['weight']
 #         )
 #         return Response({'jewelry': ProductSerializer(jewelry_new).data})
-
-
-
-# class ProductAPIView(generics.ListAPIView):
-#     queryset = Product.objects.all()
-#     serializer_class = ProductSerializer
+#
+#
+#
+# # class ProductAPIView(generics.ListAPIView):
+# #     queryset = Product.objects.all()
+# #     serializer_class = ProductSerializer
 

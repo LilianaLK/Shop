@@ -5,3 +5,4 @@ class ProductFilter(FilterSet):
 class Meta:
     model = Product
     fields = ['name', 'cat']
+
